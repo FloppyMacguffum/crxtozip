@@ -37,8 +37,5 @@ if version != 3:
    sys.exit(1)
 header_len = (data[11] << 24) | (data[10] << 16) | (data[9] << 8) | data[8]
 outzip = open(sys.argv[2], "wb")
-outdata = bytearray()
-for i in range(len(data) - header_len - 12):
-    outdata.append(data[i + header_len + 12])
-outzip.write(outdata)
+outzip.write(data[header_len+12:])
 outzip.close()
