@@ -25,17 +25,13 @@ if len(sys.argv) != 3:
 incrx = open(sys.argv[1], "rb")
 data = incrx.read()
 incrx.close()
-header = [0x43, 0x72, 0x32, 0x34]
-for i in range(len(header)):
-    if data[i] != header[i]:
-        print("INVALID CRX!!")
-        sys.exit(1)
+if data[:4] != b"Cr24":
+    print("INVALID CRX!!")
+    sys.exit(1)
 version = (data[7] << 24) | (data[6] << 16) | (data[5] << 8) | data[4]
 if version != 3:
-   print("Only version 3 CRX files are supported!")
-   print("Got version " + str(version) + " instead!")
+   print(f"Only version 3 CRX files are supported!\nGot version {version} instead!")
    sys.exit(1)
-header_len = (data[11] << 24) | (data[10] << 16) | (data[9] << 8) | data[8]
 outzip = open(sys.argv[2], "wb")
-outzip.write(data[header_len+12:])
+outzip.write(data[data[11] << 24 | data[10] << 16 | data[9] << 8 | data[8]+12:])
 outzip.close()
